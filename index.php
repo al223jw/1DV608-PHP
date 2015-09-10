@@ -14,7 +14,6 @@ $v = new LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView();
 
-echo "Just a test string";
 
 $lv->render(false, $v, $dtv);
 
