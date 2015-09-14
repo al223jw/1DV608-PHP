@@ -1,9 +1,16 @@
 <?php
 
 //INCLUDE THE FILES NEEDED...
+require_once('controller/loginController.php');
+
+require_once('model/loginModel.php');
+
 require_once('view/LoginView.php');
 require_once('view/DateTimeView.php');
 require_once('view/LayoutView.php');
+
+
+
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 error_reporting(E_ALL);
@@ -14,6 +21,9 @@ $v = new LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView();
 
+$lm = new LoginModel();
+
+$loginController = new LoginController($v, $lm);
 
 $lv->render(false, $v, $dtv);
 

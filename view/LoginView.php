@@ -68,6 +68,29 @@ class LoginView {
 		';
 	}
 	
+	public function Post(){
+		
+		if($_POST[self::$login])
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	
+	public function getUsername()
+	{
+		return $_POST[self::$name];
+	}
+	
+	public function getPassword()
+	{
+		return $_POST[self::$password];
+	}
+	
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
 		//RETURN REQUEST VARIABLE: USERNAME
