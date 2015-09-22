@@ -10,7 +10,15 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
+	private static $saveUserName = "";
+	private static $statusMessage = "";
+
+	private $lm;
 	
+	public function __construct($lm)
+	{
+		$this->lm = $lm;
+	}
 
 	/**
 	 * Create HTTP response
@@ -20,7 +28,19 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
+		$message = self::$statusMessage;
+		
+		self::$saveUserName = self::getRequestUserName();
+		
+		if($this->lm->getLoginStatus())
+		{
+			$response = $this->generateLogoutButtonHTML($message);
+		}
+		else
+		{
+			$response = $this->generateLoginFormHTML($message);
+		}
+		return $response;
 		
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
@@ -68,32 +88,53 @@ class LoginView {
 		';
 	}
 	
-	public function Post(){
-		
-		if($_POST[self::$login])
+	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
+	public function getRequestUserName()
+	{
+		if(isset($_POST[self::$name]))
+		{
+			return $_POST[self::$name];
+		}
+	}
+	
+	public function getRequestUserPassword()
+	{
+			if(isset($_POST[self::$password]))
+		{
+			return $_POST[self::$password];
+		}
+	}
+	
+	public function UserHasPressedSubmit()
+	{
+		if(isset($_POST[self::$login]))
 		{
 			return true;
 		}
-		else
+		return false;
+	}
+	
+	public function UserHasPressedLogout()
+	{
+		if(isset($_POST[self::$logout]))
 		{
-			return false;
+			return true;
 		}
+		return false;
 	}
 	
-	
-	public function getUsername()
+	public function setStatusMessage($e)
 	{
-		return $_POST[self::$name];
+		self::$statusMessage = $e -> getMessage();
 	}
 	
-	public function getPassword()
+	public function loginMessage()
 	{
-		return $_POST[self::$password];
+		self::$statusMessage = 'Welcome!';
 	}
 	
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-	private function getRequestUserName() {
-		//RETURN REQUEST VARIABLE: USERNAME
+	public function logoutMessage()
+	{
+		self::$statusMessage = 'Have a nice day!';
 	}
-	
 }

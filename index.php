@@ -17,14 +17,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 //CREATE OBJECTS OF THE VIEWS
-$v = new LoginView();
+$lm = new LoginModel();
+
+$v = new LoginView($lm);
 $dtv = new DateTimeView();
 $lv = new LayoutView();
 
-$lm = new LoginModel();
-
 $loginController = new LoginController($v, $lm);
+$loginController->init();
 
-$lv->render(false, $v, $dtv);
+$lv->render($lm->getLoginStatus(), $v, $dtv);
 
 
