@@ -28,6 +28,7 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
+		
 		$message = self::$statusMessage;
 		
 		self::$saveUserName = self::getRequestUserName();
@@ -41,18 +42,13 @@ class LoginView {
 			$response = $this->generateLoginFormHTML($message);
 		}
 		return $response;
-		
-		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
-		return $response;
 	}
 
 	/**
 	* Generate HTML code on the output buffer for the logout button
-	* @param $message, String output message
-	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLogoutButtonHTML($message) {
+	private function generateLogoutButtonHTML($message)
+	{
 		return '
 			<form  method="post" >
 				<p id="' . self::$messageId . '">' . $message .'</p>
@@ -74,11 +70,11 @@ class LoginView {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
-
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . self::$saveUserName . '">
+					
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
-
+					
 					<label for="' . self::$keep . '">Keep me logged in  :</label>
 					<input type="checkbox" id="' . self::$keep . '" name="' . self::$keep . '" />
 					
@@ -109,6 +105,7 @@ class LoginView {
 	{
 		if(isset($_POST[self::$login]))
 		{
+			self::$saveUserName = self::$name;
 			return true;
 		}
 		return false;
@@ -130,11 +127,11 @@ class LoginView {
 	
 	public function loginMessage()
 	{
-		self::$statusMessage = 'Welcome!';
+		self::$statusMessage = 'Welcome';
 	}
 	
 	public function logoutMessage()
 	{
-		self::$statusMessage = 'Have a nice day!';
+		self::$statusMessage = 'Bye bye!';
 	}
 }

@@ -22,11 +22,11 @@ class LoginModel
         
         if(empty($userN))
         {
-            throw new Exeption("Username is missing");
+            throw new Exception("Username is missing");
         }
         else if(empty($pass))
         {
-            throw new Exeption("Password is missing");
+            throw new Exception("Password is missing");
         }
         else if($userN === self::$userName && $pass === self::$userPassword)
         {
@@ -34,10 +34,11 @@ class LoginModel
            {
                 throw new Exception();
            }
+           $_SESSION["isLoggedin"] = true;
         }
         else
         {
-            throw new Exception("Wrong name of password");
+            throw new Exception("Wrong name or password");
         }
     }
     
@@ -45,7 +46,7 @@ class LoginModel
     {
         if(isset($_SESSION["isLoggedin"]))
         {
-            return $_SESSION["idLoggedin"];
+            return $_SESSION["isLoggedin"];
         }
         else
         {
@@ -57,10 +58,10 @@ class LoginModel
     {
         if(isset($_SESSION["isLoggedin"]) && !$_SESSION["isLoggedin"])
         {
-            throw new Exeption();
+            throw new Exception();
         }
         
-        $_SESSION["idLoggedin"] = false;
+        $_SESSION["isLoggedin"] = false;
     }
 }
  

@@ -29,7 +29,7 @@ class LoginController
             }
             catch(Exception $e)
             {
-                $this->v->setStatusMessage();
+                $this->v->setStatusMessage($e);
             }
         }
         
@@ -43,7 +43,7 @@ class LoginController
             }
             catch(Exception $e)
             {
-                $this->v->setStatusMessage();
+                $this->v->setStatusMessage($e);
             }
         }
     }
