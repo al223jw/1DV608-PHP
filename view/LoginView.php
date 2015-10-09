@@ -1,6 +1,7 @@
 <?php
 
 class LoginView {
+
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
 	private static $name = 'LoginView::UserName';
@@ -27,11 +28,18 @@ class LoginView {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() {
+	public function response() 
+	{
+		if(isset($_SESSION["newUser"]))
+		{
+			self::$saveUserName = $_SESSION["newUser"];
+			self::$statusMessage = "Registered new user.";
+			unset($_SESSION["newUser"]);
+		}
 		
 		$message = self::$statusMessage;
 		
-		self::$saveUserName = self::getRequestUserName();
+		//self::$saveUserName = self::getRequestUserName();
 		
 		if($this->lm->getLoginStatus())
 		{
@@ -89,7 +97,8 @@ class LoginView {
 	{
 		if(isset($_POST[self::$name]))
 		{
-			return $_POST[self::$name];
+			self::$saveUserName = trim($_POST[self::$name]);
+			return self::$saveUserName;
 		}
 	}
 	
@@ -97,15 +106,14 @@ class LoginView {
 	{
 			if(isset($_POST[self::$password]))
 		{
-			return $_POST[self::$password];
+			return trim($_POST[self::$password]);
 		}
 	}
 	
-	public function UserHasPressedSubmit()
+	public function UserHasPressedLogin()
 	{
 		if(isset($_POST[self::$login]))
 		{
-			self::$saveUserName = self::$name;
 			return true;
 		}
 		return false;

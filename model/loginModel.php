@@ -1,52 +1,65 @@
 <?php
 
-session_start();
-
 class LoginModel
 {
-    private static $userName = "Admin";
-    private static $userPassword = "Password";
+    private static $UserDAL;
+    private static $isLoggedin = "isLoggedin";
     
-    public function __construct()
+    public function __construct($DAL)
     {
-        if(isset($_SESSION["isLoggedin"]) && !empty($_SESSION["isLoggedin"]))
+        self::$UserDAL = $DAL;
+        
+        if(!isset($_SESSION[self::$isLoggedin]))
         {
-            $_SESSION["isLoggedin"] = true;
+            $_SESSION[self::$isLoggedin] = false;
         }
     }
     
     public function  tryLoginInfo($userN, $pass)
     {
-        $userN = trim($userN);
-        $pass = trim($pass);
+        $RegisterdUsers = self::$UserDAL -> getUnserializedUsers();
+        
+        if($RegisterdUsers == false){
+            throw new LoginModelException("No registerd users yet");
+        }
+        
         
         if(empty($userN))
         {
-            throw new Exception("Username is missing");
+            throw new LoginModelException("Username is missing");
         }
         else if(empty($pass))
         {
-            throw new Exception("Password is missing");
+            throw new LoginModelException("Password is missing");
         }
-        else if($userN === self::$userName && $pass === self::$userPassword)
+        else if(isset($_SESSION[self::$isLoggedin]) && $_SESSION[self::$isLoggedin] == true)
         {
-           if(isset($_SESSION["isLoggedin"]) && $_SESSION["isLoggedin"] == true)
-           {
-                throw new Exception();
-           }
-           $_SESSION["isLoggedin"] = true;
+            throw new LoginModelException();
         }
-        else
+        
+        foreach($RegisterdUsers as $regUser)
         {
-            throw new Exception("Wrong name or password");
+            if($userN == $regUser -> getUserName())
+            {
+                if(sha1(file_get_contents("../Data/salt.txt") +$userN.$pass) == $regUser -> getUserPassword())
+                {
+                    $_SESSION[self::$isLoggedin] = true;
+                    break;
+                }
+            }
+        }
+        
+        if(!$_SESSION[self::$isLoggedin])
+        {
+            throw new LoginModelException("Wrong name or password");
         }
     }
     
     public function getLoginStatus()
     {
-        if(isset($_SESSION["isLoggedin"]))
+        if(isset($_SESSION[self::$isLoggedin]))
         {
-            return $_SESSION["isLoggedin"];
+            return $_SESSION[self::$isLoggedin];
         }
         else
         {
@@ -56,14 +69,18 @@ class LoginModel
     
     public function logOut()
     {
-        if(isset($_SESSION["isLoggedin"]) && !$_SESSION["isLoggedin"])
+        if(isset($_SESSION[self::$isLoggedin]) && !$_SESSION[self::$isLoggedin])
         {
-            throw new Exception();
+            throw new LoginModelException();
         }
         
-        $_SESSION["isLoggedin"] = false;
+        $_SESSION[self::$isLoggedin] = false;
     }
 }
+
+
+class LoginModelException extends Exception
+{}
  
  
 
